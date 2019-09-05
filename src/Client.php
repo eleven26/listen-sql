@@ -13,6 +13,11 @@ class Client
     private $sock;
 
     /**
+     * @var bool
+     */
+    private $isConnected = false;
+
+    /**
      * Client constructor.
      *
      * @throws \Exception
@@ -40,6 +45,8 @@ class Client
             }
             throw $e;
         }
+
+        $this->isConnected = true;
     }
 
     /**
@@ -49,7 +56,9 @@ class Client
      */
     public function send($data)
     {
-        socket_write($this->sock, $data, strlen($data));
+        if ($this->isConnected) {
+            socket_write($this->sock, $data, strlen($data));
+        }
     }
 
     /**
