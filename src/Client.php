@@ -139,7 +139,10 @@ class Client
             }, $sql->bindings);
             $s = sprintf($s, ...$bindings);
 
-            $sql = sprintf('time: %.2f %s ', $sql->time, $s);
+            $time = sprintf('%.2f', $sql->time);
+            $time = str_pad($time, 10, ' ');
+
+            $sql = sprintf("time: $time %s\r\n", $s);
             $client->send($sql);
         });
     }

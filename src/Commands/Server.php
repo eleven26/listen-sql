@@ -89,7 +89,7 @@ class Server extends Command
             $this->clients[(int) $client] = $client;
 
             while ($input = socket_read($client, 1024)) {
-                echo $input . PHP_EOL;
+                echo trim($input) . "\r\n";
             }
 
             socket_close($client);
