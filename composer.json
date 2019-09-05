@@ -1,0 +1,32 @@
+{
+  "name": "eleven26/listen-sql",
+  "type": "library",
+  "description": "Sql dump tool for laravel/lumen",
+  "support": {
+    "issues": "https://github.com/eleven26/listen-sql/issues",
+    "source": "https://github.com/eleven26/listen-sql"
+  },
+  "homepage": "https://github.com/eleven26/listen-sql",
+  "authors": [
+    {
+      "name": "eleven26",
+      "email": "rubymay21s@gmail.com"
+    }
+  ],
+  "require": {
+    "ext-sockets": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Eleven26\\ListenSql\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Eleven26\\ListenSql\\ListenSqlServiceProvider"
+      ]
+    }
+  },
+  "minimum-stability": "dev"
+}
