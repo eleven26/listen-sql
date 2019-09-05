@@ -101,7 +101,7 @@ class Server extends Command
             $this->clients[(int) $client] = $client;
 
             while ($input = socket_read($client, 1024)) {
-                echo trim($input) . "\r\n";
+                echo $input;
             }
 
             socket_close($client);
