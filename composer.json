@@ -1,5 +1,6 @@
 {
   "name": "eleven26/listen-sql",
+  "license": "MIT",
   "type": "library",
   "description": "Sql dump tool for laravel/lumen",
   "support": {
