@@ -130,8 +130,8 @@ class Client
         \DB::listen(function (QueryExecuted $sql) use ($client) {
             $s = str_replace('?', '%s', $sql->sql);
 
-            $bindings = array_map(function ($binding) {
-                if (is_string($binding)) {
+            $bindings = array_map(function ($binding) use ($client) {
+                if (is_string($binding) || is_object($binding)) {
                     return "\"{$binding}\"";
                 }
 
