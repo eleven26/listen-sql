@@ -7,7 +7,7 @@
 1.通过 [composer](https://getcomposer.org/) 安装 ([eleven26/listen-sql](https://packagist.org/packages/eleven26/listen-sql))。
 
 ```bash
-composer require "eleven26/listen-sql:~1.0.0"
+composer require "eleven26/listen-sql:~1.0.1"
 ```
 
 2.注册 Service Provider
