@@ -2,12 +2,11 @@
 
 namespace Eleven26\ListenSql;
 
-use Eleven26\ListenSql\Commands\Server;
 use Illuminate\Database\Events\QueryExecuted;
 
 class Client
 {
-    use Cache;
+    use ConfigCache;
 
     /**
      * @var resource
@@ -26,7 +25,7 @@ class Client
      */
     public function __construct()
     {
-        if (!$this->serverRunning()) return;
+        if (!$this->serverIsRunning()) return;
 
         try {
             $this->createSocket();;
@@ -113,8 +112,6 @@ class Client
      */
     public static function createSocketClient()
     {
-        if (static::isRunningServer()) return;
-
         $client = app(Client::class);
 
         // Server is not running.
@@ -138,18 +135,6 @@ class Client
             $sql = sprintf("time: $time %s\r\n", $s);
             $client->send($sql);
         });
-    }
-
-    /**
-     * Determine if is running "php artisan listenSql:start"
-     *
-     * @return bool
-     */
-    private static function isRunningServer()
-    {
-        global $argv;
-
-        return in_array(app(Server::class)->signature, $argv ?? []);
     }
 
     /**

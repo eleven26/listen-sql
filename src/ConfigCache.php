@@ -2,14 +2,14 @@
 
 namespace Eleven26\ListenSql;
 
-trait Cache
+trait ConfigCache
 {
     /**
      * Set server status to running.
      */
     public function running()
     {
-        \Cache::forever($this->statusKey(), 1);
+        \Cache::forever(static::statusKey(), 1);
     }
 
     /**
@@ -17,9 +17,9 @@ trait Cache
      *
      * @return bool
      */
-    public function serverRunning()
+    public static function serverIsRunning()
     {
-        return \Cache::get($this->statusKey()) == 1;
+        return \Cache::get(static::statusKey()) == 1;
     }
 
     /**
@@ -76,7 +76,7 @@ trait Cache
      *
      * @return string
      */
-    private function statusKey()
+    private static function statusKey()
     {
         return 'listen-sql:listening';
     }

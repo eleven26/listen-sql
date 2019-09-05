@@ -2,12 +2,12 @@
 
 namespace Eleven26\ListenSql\Commands;
 
-use Eleven26\ListenSql\Cache;
+use Eleven26\ListenSql\ConfigCache;
 use Illuminate\Console\Command;
 
 class Server extends Command
 {
-    use Cache;
+    use ConfigCache;
 
     /**
      * @var string
