@@ -140,7 +140,7 @@ class Client
             $s = sprintf($s, ...$bindings);
 
             $time = sprintf('%.2f', $sql->time);
-            $time = str_pad($time, 10, ' ');
+            $time = str_pad($time, 8, ' ');
 
             $sql = sprintf("time: $time %s\r\n", $s);
             $client->send($sql);
