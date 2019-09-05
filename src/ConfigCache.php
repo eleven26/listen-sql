@@ -1,6 +1,6 @@
 <?php
 
-namespace Eleven26\ListenSql;
+namespace Modules\Core\Services\ListenSql;
 
 trait ConfigCache
 {
@@ -9,7 +9,7 @@ trait ConfigCache
      */
     public function running()
     {
-        \Cache::forever(static::statusKey(), 1);
+        file_put_contents(self::statusPath(), 1);
     }
 
     /**
@@ -19,7 +19,7 @@ trait ConfigCache
      */
     public static function serverIsRunning()
     {
-        return \Cache::get(static::statusKey()) == 1;
+        return @file_get_contents(self::statusPath()) == 1;
     }
 
     /**
@@ -29,7 +29,7 @@ trait ConfigCache
      */
     public function cachePort($port)
     {
-        \Cache::forever($this->portKey(), $port);
+        file_put_contents($this->portPath(), $port);
     }
 
     /**
@@ -39,7 +39,7 @@ trait ConfigCache
      */
     public function getCachePort()
     {
-        return \Cache::get($this->portKey());
+        return file_get_contents($this->portPath());
     }
 
     /**
@@ -67,18 +67,18 @@ trait ConfigCache
      */
     public function clearCache()
     {
-        \Cache::forget($this->statusKey());
-        \Cache::forget($this->portKey());
+        @unlink(self::statusPath());
+        @unlink(self::portPath());
     }
 
     /**
-     * Server Status cache key in cache.
+     * Server status cache saving path.
      *
      * @return string
      */
-    private static function statusKey()
+    private static function statusPath()
     {
-        return 'listen-sql:listening';
+        return storage_path('logs/listen-sql');
     }
 
     /**
@@ -92,12 +92,12 @@ trait ConfigCache
     }
 
     /**
-     * Listening port key in cache.
+     * Listening port saving path.
      *
      * @return string
      */
-    private function portKey()
+    private function portPath()
     {
-        return 'listen-sql:listening-port';
+        return storage_path('logs/listen-sql-port');
     }
 }
