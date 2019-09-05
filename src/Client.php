@@ -7,6 +7,8 @@ use Illuminate\Database\Events\QueryExecuted;
 
 class Client
 {
+    use Cache;
+
     /**
      * @var resource
      */
@@ -24,23 +26,14 @@ class Client
      */
     public function __construct()
     {
-        if ($this->isDisable()) return;
+        if (!$this->serverRunning()) return;
 
-        $this->init();
-    }
-
-    /**
-     * Create socket and connect to server.
-     *
-     * @throws \Exception
-     */
-    private function init()
-    {
         try {
             $this->createSocket();;
             $this->connect();
         } catch (\Exception $e) {
             if (str_contains($e->getMessage(), 'Connection refused')) {
+                $this->clearCache();
                 return;
             }
             throw $e;
@@ -56,9 +49,7 @@ class Client
      */
     public function send($data)
     {
-        if ($this->isConnected) {
-            socket_write($this->sock, $data, strlen($data));
-        }
+        socket_write($this->sock, $data, strlen($data));
     }
 
     /**
@@ -97,23 +88,13 @@ class Client
     }
 
     /**
-     * Determine if package is disabled.
-     *
-     * @return bool
-     */
-    private function isDisable()
-    {
-        return !config('listen-sql.listen_sql_enable');
-    }
-
-    /**
      * Get server bounded ip address.
      *
      * @return string
      */
     private function ip()
     {
-        return config('listen-sql.listen_sql_bind_address');
+        return $this->getCacheIp();
     }
 
     /**
@@ -123,7 +104,7 @@ class Client
      */
     private function port()
     {
-        return config('listen-sql.listen_sql_bind_port');
+        return $this->getCachePort();
     }
 
     /**
@@ -135,6 +116,9 @@ class Client
         if (static::isRunningServer()) return;
 
         $client = app(Client::class);
+
+        // Server is not running.
+        if (!$client->isConnected) return;
 
         \DB::listen(function (QueryExecuted $sql) use ($client) {
             $s = str_replace('?', '%s', $sql->sql);

@@ -9,9 +9,7 @@ class ListenSqlServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->mergeConfigFrom(
-            __DIR__ . '/config/listen-sql.php', 'listen-sql'
-        );
+        //
     }
 
     public function boot()

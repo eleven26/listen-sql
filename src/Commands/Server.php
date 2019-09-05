@@ -2,11 +2,17 @@
 
 namespace Eleven26\ListenSql\Commands;
 
+use Eleven26\ListenSql\Cache;
 use Illuminate\Console\Command;
 
 class Server extends Command
 {
-    public $signature = 'listenSql:start';
+    use Cache;
+
+    /**
+     * @var string
+     */
+    public $signature = 'listen-sql:start {--ip=127.0.0.1}';
 
     /**
      * Server socket resource.
@@ -14,6 +20,11 @@ class Server extends Command
      * @var resource
      */
     private $sock;
+
+    /**
+     * @var string
+     */
+    private $ip;
 
     /**
      * Connected client socket resource.
@@ -27,24 +38,16 @@ class Server extends Command
      */
     public function handle()
     {
-        if ($this->isDisable()) {
-            $this->error("Listen sql is disabled.");
-            $this->info("可在 .env 添加 'LISTEN_SQL_ENABLE=true' 以启用该扩展包.");
-            exit;
-        }
+        $this->ip = $this->option('ip');
 
-        $this->init();
-        $this->accept();
-    }
-
-    /**
-     * Create socket and listen
-     */
-    private function init()
-    {
         $this->createSock();
         $this->socketBind();
         $this->socketListen();
+
+        // Set server running state to 1
+        $this->running();
+
+        $this->accept();
     }
 
     /**
@@ -64,11 +67,20 @@ class Server extends Command
      */
     private function socketBind()
     {
-        $bound = socket_bind($this->sock, $this->ip(), $this->port());
+        $bound = false;
+        $port = 10000;
+
+        while (!$bound) {
+            if ($port > 11000) break;
+            $bound = @socket_bind($this->sock, $this->ip(), ++$port);
+        }
 
         if (!$bound) {
             $this->throwError();
         }
+
+        $this->cachePort($port);
+        $this->cacheIp($this->ip());
     }
 
     /**
@@ -109,33 +121,13 @@ class Server extends Command
     }
 
     /**
-     * Determine if package is disabled.
-     *
-     * @return bool
-     */
-    private function isDisable()
-    {
-        return !config('listen-sql.listen_sql_enable');
-    }
-
-    /**
      * Get ip address for listening
      *
      * @return string
      */
     private function ip()
     {
-        return config('listen-sql.listen_sql_bind_address');
-    }
-
-    /**
-     * Get port for server socket binding.
-     *
-     * @return int
-     */
-    private function port()
-    {
-        return config('listen-sql.listen_sql_bind_port');
+        return $this->ip;
     }
 
     /**
