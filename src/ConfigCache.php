@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Core\Services\ListenSql;
+namespace Eleven26\ListenSql;
 
 trait ConfigCache
 {
