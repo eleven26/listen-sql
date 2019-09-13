@@ -39,7 +39,7 @@ trait ConfigCache
      */
     public function getCachePort()
     {
-        return file_get_contents($this->portPath());
+        return @file_get_contents($this->portPath());
     }
 
     /**
