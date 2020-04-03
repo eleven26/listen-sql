@@ -99,7 +99,7 @@ class Server extends Command
         while (true) {
             $client = socket_accept($this->sock);
             $this->clients[(int) $client] = $client;
-
+            $this->info("----------".date("Y-m-d H:i:s")."----------");
             while ($input = socket_read($client, 1024)) {
                 echo $input;
             }
