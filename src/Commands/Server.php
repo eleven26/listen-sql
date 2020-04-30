@@ -60,6 +60,10 @@ class Server extends Command
         if (!$this->sock) {
             $this->throwError();
         }
+
+        if (!socket_set_option($this->sock, SOL_SOCKET, SO_REUSEADDR, 1)) {
+            $this->throwError();
+        }
     }
 
     /**
